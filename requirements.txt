@@ -1,0 +1,7 @@
+numpy
+torch>=1.10
+tqdm
+matplotlib
+scipy
+pymoo
+pandas
