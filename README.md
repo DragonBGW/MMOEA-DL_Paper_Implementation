@@ -10,6 +10,8 @@ It also provides **baseline algorithms**, a **multi-evaluation framework**, and 
 
 ## 🚀 Features
 - **MMOEA-DL Implementation**: Hybrid EA + DRL for multi-objective optimization.
+- <img width="482" height="88" alt="image" src="https://github.com/user-attachments/assets/07abdb6d-729a-43f9-8f64-eb46ba7a5172" />
+
 - **Baseline Algorithms**:
   - IMMODE-SA (EA + Simulated Annealing)
   - MMODE-CSCD (EA with Crowding Distance)
@@ -20,6 +22,7 @@ It also provides **baseline algorithms**, a **multi-evaluation framework**, and 
   - Pareto front visualizations
   - Boxplots & statistical tests (Wilcoxon, Friedman)
   - Paper-ready LaTeX tables
+<img width="478" height="318" alt="image" src="https://github.com/user-attachments/assets/80f77999-e994-4e9e-9810-4d6b977a3cb5" />
 
 ---
 
