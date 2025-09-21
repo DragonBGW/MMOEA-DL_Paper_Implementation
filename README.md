@@ -76,6 +76,8 @@ python multi_eval.py
 | **AST** | Average Solution Time (seconds) |
 
 📈 Visualization Examples
+While Implementing the Deep RL algorithm for a single robot, the plot with first training session is 
+<img width="232" height="230" alt="image" src="https://github.com/user-attachments/assets/ed4b577f-8796-41f7-8c0d-3bb883247038" />
 
 Pareto Fronts
 
