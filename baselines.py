@@ -1,13 +1,27 @@
 import numpy as np
 from ea_upper import SimpleMMOEA
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans 
+from utils import assignment_to_subtours
+
+# ---------------------------------------------------
+# Simple Greedy Solver
+# ---------------------------------------------------
+def greedy_solver(assignment, points, depots, use_lns=False):
+    """
+    Simple greedy solver: tasks assigned to each robot are visited in given order.
+    Can later add LNS or local optimization if use_lns=True.
+    """
+    n_robots = len(depots)
+    tours = assignment_to_subtours(assignment, points, n_robots, depots)
+    return tours
+
 
 # ---------------------------------------------------
 # 1. MMODE-CSCD: Crowding Distance Diversity
 # ---------------------------------------------------
 def run_mmode_cscd(points, depots, pop=80, gens=40):
     ea = SimpleMMOEA(len(points), len(depots), pop_size=pop)
-    
+
     def crowding_distance(objs):
         objs = np.array(objs)
         n, m = objs.shape
@@ -15,12 +29,12 @@ def run_mmode_cscd(points, depots, pop=80, gens=40):
         for i in range(m):
             sorted_idx = np.argsort(objs[:, i])
             dist[sorted_idx[0]] = dist[sorted_idx[-1]] = np.inf
-            for j in range(1, n-1):
-                prev, nxt = sorted_idx[j-1], sorted_idx[j+1]
+            for j in range(1, n - 1):
+                prev, nxt = sorted_idx[j - 1], sorted_idx[j + 1]
                 dist[sorted_idx[j]] += (objs[nxt, i] - objs[prev, i])
         return dist
 
-    final = ea.evolve(n_gens=gens, lower_level_solver=None,
+    final = ea.evolve(n_gens=gens, lower_level_solver=greedy_solver,
                       points=points, depots=depots, use_lns=False)
 
     objs = [f[3] for f in final]
@@ -36,7 +50,7 @@ def run_mmode_cscd(points, depots, pop=80, gens=40):
 # ---------------------------------------------------
 def run_immode_sa(points, depots, pop=80, gens=40):
     ea = SimpleMMOEA(len(points), len(depots), pop_size=pop)
-    final = ea.evolve(n_gens=gens, lower_level_solver=None,
+    final = ea.evolve(n_gens=gens, lower_level_solver=greedy_solver,
                       points=points, depots=depots, use_lns=False)
 
     T = 1.0       # initial temperature
@@ -65,10 +79,7 @@ def run_ss_mopso(points, depots, pop=80, gens=40):
     sols = []
     for _ in range(pop):
         assignment = np.random.randint(0, n_robots, size=n_tasks)
-        tours = [[] for _ in range(n_robots)]
-        for r in range(n_robots):
-            idxs = np.where(assignment == r)[0]
-            tours[r] = idxs.tolist()
+        tours = greedy_solver(assignment, points, depots)
         dist_sum = np.random.uniform(1000, 3000)
         makespan = np.random.uniform(500, 1500)
         sols.append({"assignment": assignment, "tours": tours, "objs": (dist_sum, makespan)})
@@ -80,7 +91,7 @@ def run_ss_mopso(points, depots, pop=80, gens=40):
 # ---------------------------------------------------
 def run_dsc_moagde(points, depots, pop=80, gens=40, n_clusters=5):
     ea = SimpleMMOEA(len(points), len(depots), pop_size=pop)
-    final = ea.evolve(n_gens=gens, lower_level_solver=None,
+    final = ea.evolve(n_gens=gens, lower_level_solver=greedy_solver,
                       points=points, depots=depots, use_lns=False)
 
     assignments = [f[1] for f in final]
